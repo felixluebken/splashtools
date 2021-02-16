@@ -1,0 +1,191 @@
+body {
+    height:796px;
+    width:1334px;
+    background: #0B0E1A;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    overflow-x: hidden;
+    overflow-y: hidden;
+    margin:0px;
+}
+
+#saad_rocket_section {
+    height:796px;
+    width:890px;
+    background: linear-gradient(129deg, #203274, #1c2239, #0c0f1c, #0c0918, #1c1341);
+    background-size: 1000% 1000%;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    float:right;
+
+    animation: backgroundGradient 8s ease infinite;
+    -webkit-app-region: drag;
+}
+@keyframes backgroundGradient {
+    0%{background-position:0% 70%}
+    50%{background-position:100% 31%}
+    100%{background-position:0% 70%}
+}
+.star {
+    position:relative;
+    width:15px;
+    height:15px;
+
+    background: url("images/auth-stars.png") center;
+
+    user-select: none;
+}
+.rocket_floor {
+
+    top:39%;
+    left:48%;
+    position:absolute;
+    width:509px;
+    height:562px;
+    background: url("images/auth-rocket-floor.png") center no-repeat;
+
+}
+.rocket {
+
+    top:19%;
+    left:48%;
+    position:absolute;
+    width:509px;
+    height:562px;
+    background: url("images/auth-rocket.png") center no-repeat;
+
+    animation: rocketMovement 5s ease infinite;
+}
+@keyframes rocketMovement {
+    0% {
+        top:19%;
+    }
+    50% {
+        top:14%;
+    }
+    100% {
+        top:19%;
+    }
+}
+
+
+
+
+
+#auth_section {
+    float:left;
+    -webkit-app-region: drag;
+}
+
+
+.main_title {
+    width: 444px;
+    height: 66px;
+    background: url("images/main-logo.png") no-repeat center;
+
+    margin-top:260px;
+}
+.main_subtitle {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 27px;
+    color: rgba(255, 255, 255, 0.75);
+    margin-left:177px;
+    user-select: none;
+}
+.license_key_section {
+    width: 320px;
+    height: 40px;
+
+    background: #161A2D;
+    border-radius: 7px;
+
+    margin-top:50px;
+    margin-left:62px;
+    margin-right:62px;
+    -webkit-app-region: no-drag;
+}
+#license_key-key {
+    background: url("images/auth-key.png") no-repeat center;
+    width:23px;
+    height:13px;
+
+    padding-top:26px;
+    padding-left:27px;
+
+    float:left;
+    -webkit-app-region: no-drag;
+}
+#license_key {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 27px;
+    /* identical to box height */
+
+    padding-top:7px;
+    padding-right:10px;
+    padding-left:10px;
+
+    color: rgba(255, 255, 255, 0.4);
+    background: transparent;
+    border: none;
+    outline: none;
+    float:left;
+    -webkit-app-region: no-drag;
+}
+
+.auth-main-button {
+
+    margin-left:122px;
+    margin-right:122px;
+    margin-top:25px;
+
+    width: 200px;
+    height: 45px;
+    background: #81CEF0;
+    border-radius: 7px;
+
+    display: flex;
+    column-gap: 10px;
+    justify-content: center;
+    align-items: center;
+
+    -webkit-app-region: no-drag;
+}
+.auth-main-button:hover {
+    background: #67aac7;
+}
+.auth-main-button:active {
+    background: #548ca3;
+}
+
+.auth-main-button_text {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 800;
+    font-size: 13px;
+    line-height: 19px;
+    color: #0B0E1A;
+    user-select: none;
+}
+
+.support_button {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 27px;
+    color: rgba(255, 255, 255, 0.75);
+
+    margin-left:176px;
+    margin-right:176px;
+
+    margin-top:240px;
+
+    user-select: none;
+
+    -webkit-app-region: no-drag;
+}

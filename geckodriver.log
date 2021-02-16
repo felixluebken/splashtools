@@ -1,0 +1,13 @@
+1613483003572	geckodriver	INFO	Listening on 127.0.0.1:54721
+1613483006647	mozrunner::runner	INFO	Running command: "../browser/App/Firefox64/firefoxSplash.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Felix\\AppData\\Local\\Temp\\rust_mozprofile6pd0ob"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1613483010106	Marionette	INFO	Listening on port 54734
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1613483010351	Marionette	WARN	TLS certificate errors will be ignored for this session
+1613483010354	Marionette	INFO	Proxy settings initialised: {"proxyType":"manual","httpProxy":"127.0.0.1:54720","noProxy":[],"sslProxy":"127.0.0.1:54720"}
+1613483010364	Marionette	ERROR	[15] No reply from Marionette:Register
+1613483026442	Marionette	INFO	Stopped listening on port 54734
+JavaScript error: chrome://global/content/elements/browser-custom-element.js, line 1690: NotFoundError: No such JSWindowActor 'MarionetteEvents'
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+

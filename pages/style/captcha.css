@@ -1,0 +1,506 @@
+
+
+#captcha_groups {
+    width:100%;
+    height:41px;
+    background: #0F1220;
+}
+
+
+
+.group {
+    width: 193px;
+    height:41px;
+    float:left;
+    background: #0B0E1A;
+    /*
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    */    
+}
+.group:hover {
+    background: #070911;
+}
+.group:active {
+    background: #161B2E;
+}
+
+.group_name {
+    min-width:100px;
+    max-width:120px;
+    margin-left:5px;
+    padding:10px;
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 21px;
+    color:#FFFFFF;
+    text-align:center;
+    user-select: none;
+    white-space: pre;
+    overflow: hidden;
+    float:left;
+}
+.group_remove {
+    padding:15px;
+    height:9px;
+    width:9px;
+    background: url("images/icon-remove-group.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    float:right;
+}
+.group_add {
+    margin-left:10px;
+    height:41px;
+    width:41px;
+    background: url("images/icon-add-group.png");
+    background-repeat:no-repeat;
+    background-position: center center;
+    float:left;
+}
+
+
+
+textarea {
+    background-color:transparent;
+    resize:none;
+    color:white;
+
+    font-family: Poppins;
+    font-style: normal;
+    font-size: 12px;
+}
+
+
+#captcha_control {
+    width:100%;
+    height: 64px;
+    background: #161B2E;
+}
+#captcha_control-add {
+
+    margin: 14px 14px; 
+
+    width: 166px;
+    height: 36px;
+
+    background: #81CEF0;
+    border-radius: 18px;
+
+    float:left;
+
+    display: flex;
+    column-gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+#captcha_control-add:hover {
+    background: #67aac7;
+}
+#captcha_control-add:active {
+    background: #548ca3;
+}
+#captcha_control-add-icon {
+    height:18px;
+    width:18px;
+    background: url("images/icon-create-task.png");
+}
+#captcha_control-add-text {
+    margin-left:7px;
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 800;
+    font-size: 13px;
+    line-height: 19px;
+    color: #0B0E1A;
+    user-select: none;
+}
+
+.captcha_control-button {
+    margin:14px 10px;
+    padding: 8px 15px;
+    float:left;
+
+    display: flex;
+    column-gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+.captcha_control-button:hover{
+    background: #12172b;
+    border-radius: 18px;
+}
+.captcha_control-button:active {
+    background: #0B0E1A;
+    border-radius: 18px;
+}
+
+.captcha_control-button-text {
+    margin-left:7px;
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 19px;
+    /* identical to box height */
+    color: #FFFFFF;
+    user-select: none;
+}
+
+#captcha_control-start_all-img {
+    height:14px;
+    width: 11px;
+    background: url("images/icon-start-tasks.png");
+}
+#captcha_control-stop_all-img {
+    height:11px;
+    width: 11px;
+    background: #FFC74F;
+    border-radius: 2px;
+    
+}
+#captcha_control-import-img {
+    height:16px;
+    width: 12px;
+    background: url("images/icon-import.png");
+}
+#captcha_control-export-img {
+    height:16px;
+    width: 12px;
+    background: url("images/icon-export.png");
+}
+#captcha_control-test-img {
+    height:16px;
+    width: 16px;
+    background: url("images/icon-test-captcha.png");
+}
+
+
+#captcha-main_body {
+    min-height:660px;
+    width:auto;
+    
+}
+#task_details {
+    background: #0F1220;
+    min-height:600px;
+    width:300px;
+    float:left;
+    padding:30px 24px;
+}
+.task-title {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 36px;
+
+    color: #FFFFFF;
+    user-select: none;
+
+    float:left;
+    margin-bottom:20px;
+    margin-right:20px;
+}
+#task_details-statistics-title {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 21px;
+
+    color: #FFFFFF;
+    user-select: none;
+}
+
+.task_details-big_frame {
+    width: 300px;
+    height: 116px;
+    margin-top:25px;
+    margin-bottom:25px;
+    background: #161A2D;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
+    border-radius: 7px;
+}
+.task_details-big_frame:hover {
+    background: #0f121f;
+}
+
+.task_details-monitor {
+    height:78px;
+    width:74px;
+    padding-left:24px;
+    padding-top:19px;
+    padding-bottom:19px;
+    float:left;
+}
+.task_details-monitor-title {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 21px;
+    /* identical to box height */
+
+
+    color: #FFFFFF;
+    user-select: none;
+}
+.task_details-monitor-value {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 30px;
+    line-height: 45px;
+    /* identical to box height */
+    
+    
+    color: rgba(255, 255, 255, 0.75);
+    user-select: none;
+}
+.task_details-chart {
+    height:116px;
+    width:200px;
+    float:right;
+}
+
+
+.task_details-small_frame {
+    margin-top:10px;
+    width: 302px;
+    height: 47px;
+
+    background: #161A2D;
+    border-radius: 7px;
+}
+.task_details-small_frame:hover {
+    background: #0d101c;
+}
+
+.task_details-score-value {
+    margin-top:16px;
+    margin-bottom:16px;
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 19px;
+    /* identical to box height */
+
+
+    color: #FFFFFF;
+    user-select: none;
+    float:left;
+}
+.task_details-score-description {
+    margin:16px;
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 19px;
+    /* identical to box height */
+
+    text-align: right;
+
+    color: rgba(255, 255, 255, 0.75);
+    user-select: none;
+    float:right;
+}
+#task_details-score_high-icon {
+    margin:16px;
+    width: 15px;
+    height: 15px;
+
+    background: #59F3A0;
+    border-radius: 3px;
+
+    float:left;
+}
+#task_details-score_medium-icon {
+    margin:16px;
+    width: 15px;
+    height: 15px;
+
+    background: #FFC74F;
+    border-radius: 3px;
+
+    float:left;
+}
+#task_details-score_low-icon {
+    margin:16px;
+    width: 15px;
+    height: 15px;
+
+    background: #FA5677;
+    border-radius: 3px;
+
+    float:left;
+}
+#task_details-score_none-icon {
+    margin:16px;
+    width: 15px;
+    height: 15px;
+
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+
+    float:left;
+}
+
+
+
+#task_viewer {
+    padding:30px;
+    height:600px;
+    width:920px;
+    float:left;
+    overflow-y:auto;
+}
+#task_viewer::-webkit-scrollbar {
+    width: 18px;               /* width of the entire scrollbar */
+  }
+#task_viewer::-webkit-scrollbar-track {
+    background:#070911;        /* color of the tracking area */
+}
+#task_viewer::-webkit-scrollbar-thumb {
+    background-color: #161A2D;    /* color of the scroll thumb */
+    border-radius: 20px;       /* roundness of the scroll thumb */
+    border: 3px solid #070911;  /* creates padding around scroll thumb */
+}
+#task_viewer-tasks {
+    width: 80px;
+    height: 36px;
+
+    background: #81CEF0;
+    border-radius: 18px;
+
+    float:left;
+
+    display: flex;
+    column-gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+#task_viewer-tasks-text {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 800;
+    font-size: 13px;
+    line-height: 19px;
+    color: #0B0E1A;
+    user-select: none;
+}
+
+#task_viewer-table {
+    width:100%;
+    border-collapse:separate;
+    border: 1px solid rgba(60, 62, 72, 0.5);
+    border-radius:6px;
+    -moz-border-radius:6px;
+}
+
+td{
+    max-width:200px;
+    border-left: 1px solid rgba(60, 62, 72, 0.5);
+    border-top: 1px solid rgba(60, 62, 72, 0.5);
+
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 19px;
+    
+    padding-top:10px;
+    padding-bottom:10px;
+    padding-left:12px;
+    padding-right:12px;
+    text-align:left;
+
+    color: #FFFFFF;
+
+    user-select: none;
+
+    white-space: nowrap;
+    overflow:hidden;
+}
+th {
+    border-left: 1px solid rgba(60, 62, 72, 0.5);
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 19px;
+    color: rgba(255, 255, 255, 0.75);
+
+    width:128px;
+    padding-top:10px;
+    padding-bottom:10px;
+    padding-left:12px;
+    text-align:left;
+
+    user-select: none;
+}
+td:first-child, th:first-child {
+    border-left: none;
+}
+
+
+.table_icon-start {
+    margin:3px 4px;
+    height:16px;
+    width: 18px;
+    background: url("images/icon-start-task.png");
+    float:left;
+    background-repeat: no-repeat;
+    background-position: center; 
+}
+.table_icon-stop {
+    margin:4px 6px;
+    height:15px;
+    width: 14px;
+    background: #FFC74F;
+    border-radius: 2px;
+    float:left;
+    background-repeat: no-repeat;
+    background-position: center; 
+}
+.table_icon-edit {
+    margin:0px 8px;
+    height:16px;
+    width: 18px;
+    background: url("images/icon-edit-task.png");
+    float:left;
+    background-repeat: no-repeat;
+}
+.table_icon-view {
+    margin:0px 7px;
+    height:16px;
+    width: 18px;
+    background: url("images/icon-view-task.png");
+    float:left;
+    background-repeat: no-repeat;
+    background-position: center; 
+}
+.table_icon-test {
+    margin:0px 7px;
+    height:16px;
+    width: 18px;
+    background: url("images/icon-test-captcha.png");
+    float:left;
+    background-repeat: no-repeat;
+    background-position: center; 
+}
+.table_icon-delete {
+    margin:0px 8px;
+    height:16px;
+    width: 18px;
+    background: url("images/icon-delete.png");
+    float:left;
+    background-repeat: no-repeat;
+    background-position: center; 
+}

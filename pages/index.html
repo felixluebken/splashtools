@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet"/>
+        <link href="style/menu_main.css" rel="stylesheet"/>
+        <link href="style/popup_main.css" rel="stylesheet"/>
+
+        <script src="../node_modules/plotly.js-dist-min/plotly.min.js"></script>
+        <script src="../linkers/dashboard.js"></script>
+        <script src="../linkers/captcha.js"></script>
+        <script src="../linkers/profiles.js"></script>
+        <script src="../linkers/cards.js"></script>
+
+        <script src="../linkers/user.js"></script>
+        <script src="../linkers/window.js"></script>
+
+        <script src="../linkers/countries.js"></script>
+
+
+    </head>
+    <body>
+        <script>
+            const {ipcRenderer} = require('electron')
+        </script>
+
+        <div id="page_blocker"></div>
+        <div id="blur_section">
+            
+
+            <div id="menu" style="visibility:none;opacity:0;">
+                <div id="menu_logo" style="visibility:none;opacity:0;"></div>
+                <div id="menu_items">
+                    <a href="#" id="menu_item-dashboard" class="menu_item" onclick="open_dashboard();update_dashboard();">Dashboard</a>
+                    <a href="#" id="menu_item-captcha" class="menu_item" onclick="open_captcha()">Captcha</a>
+                    <a href="#" id="menu_item-profiles" class="menu_item" onclick="open_profiles();get_profiles_groups()">Profiles</a>
+                    <a href="#" id="menu_item-cards" class="menu_item" onclick="open_cards()">Cards</a>
+                </div>
+                
+                <div id="menu_close" onclick="close_window()"></div>
+                <div id="menu_minimize" onclick="minimize_window()"></div>
+                <div id="menu_dropdown" onclick="toggleUserSection()" style="visibility:none;opacity:0;"></div>
+                <div id="menu_profile-pic" style="visibility:none;opacity:0;"></div>
+                <div class="menu_v_divider"></div>
+                <input type="text" id="menu_search" placeholder="Search...">       
+                <div id="menu_search-icon"></div>
+                <div class="menu_v_divider"></div>  
+            </div>
+
+            <div id="menu_marker" style="top:90px;left:116px;"></div>
+            <div class="horizontal_divider"></div>
+            
+            <script>
+                function toggleUserSection() {
+                    var userSection = document.getElementById("user_section");
+                    var dropDown = document.getElementById("menu_dropdown");
+                    if(userSection.style.visibility === "hidden") {
+                        userSection.style.zIndex = 5000
+                        userSection.style.visibility = "visible";
+                        userSection.style.opacity = "1";
+                        dropDown.style.transform = 'rotate(180deg)';
+                    } else {
+                        userSection.style.visibility = "hidden";
+                        userSection.style.opacity = "0";
+                        dropDown.style.transform = 'rotate(0deg)';
+                    }
+                }
+            </script>
+            
+            <div id="main" onclick="hideUserSection()">
+                <div id="dashboard_page" style="visibility:visible;opacity:1;">
+                    <style scoped>
+                        @import "style/dashboard.css";
+                    </style>
+
+                    <div id="dashboard_update_group" style="visibility:none;opacity:0;">
+                        <div class="dashboard_updater_panel">
+                            <div id="dashboard_updater_panel-template"></div>
+                            <span id="dashboard_update-title" class="dashboard_big_text" style="margin-left:20px;">SplashTools Up To Date</span>
+                            
+                            <span id="dashboard_update-version" class="dashboard_sub_text" style="margin-left:20px;color: #49B3A8;display:block;"></span>
+                            <div id="dashboard_update-btn" class="update-btn" onclick="restartApp()" style="display:none;">
+                                <span class="update-btn-text">Install</span>
+                            </div>
+                        
+                        </div>
+                        <span class="dashboard_main_text">Update Notes</span>
+                        <div id="dashboard_updater_changelog_panel" class="dashboard_updater_changelog_panel">
+                            <div class="dashboard_changelog-title">
+                                <span class="dashboard_changelog-text">02/11/2021</span>
+                                <span class="dashboard_changelog-text" style="color:#49B3A8">v0.0.1</span>
+                            </div>
+                            <ul>
+                                <li>Captcha farming, profile converter, card import</li>
+                            </ul>
+                            <div class="dashboard_changelog-divider"></div>
+                            
+                        </div>
+                    </div>
+
+                    <script>
+                        const description = document.getElementById("dashboard_update-title")
+                        const version = document.getElementById("dashboard_update-version")
+                        const btn = document.getElementById("dashboard_update-btn")
+
+                        ipcRenderer.send('app_version')
+                        ipcRenderer.on('app_version', (event,arg) => {
+                            ipcRenderer.removeAllListeners('app_version');
+                            version.innerHTML = "Version " + arg.version;
+                        })
+
+                        ipcRenderer.on('update_available', () => {
+                            ipcRenderer.removeAllListeners('update_available');
+                            description.innerHTML = 'Update Available';
+                            version.innerHTML = "Downloading update...";
+                            version.style.color = "#FA5677"
+                        });
+
+                        ipcRenderer.on('update_downloaded', () => {
+                            ipcRenderer.removeAllListeners('update_downloaded');
+                            description.innerHTML = 'Update Available';
+                            version.innerHTML = "Update downloaded. Please install....";
+                            version.style.color = "#49B3A8"
+                            btn.style.display = "block"
+                        });
+
+                        function restartApp() {
+                            ipcRenderer.send('restart_app');
+                        }
+
+                    </script>
+
+
+                    <div id="dashboard_info_group">
+                        <div id="dashboard_info_group-top" style="visibility:none;opacity:0;">
+                            <div class="dashboard_info-statistics">
+                                <br>
+                                <span class="dashboard_main_text" style="margin:20px;">Statistics</span>
+                                
+                                <br>
+                                
+                                <div class="dashboard_statistics-text">Total Gmail Accounts:</div>
+                                <div class="dashboard_statistics-frame">
+                                    <span id="dashboard_statistics-gmails" class="dashboard_statistics-frame-text">0</span>
+                                </div>
+
+                                <br><br><br>
+
+                                <div class="dashboard_statistics-text">Total Profiles:</div>
+                                <div class="dashboard_statistics-frame">
+                                    <span id="dashboard_statistics-profiles" class="dashboard_statistics-frame-text">0</span>
+                                </div>
+                            
+                                <br><br><br>
+
+                                <div class="dashboard_statistics-text">Total Virtual Cards:</div>
+                                <div class="dashboard_statistics-frame">
+                                    <span id="dashboard_statistics-cards" class="dashboard_statistics-frame-text">0</span>
+                                </div>
+
+                            </div>
+                            <div class="dashboard_info-user">
+                                <div id="dashboard-user-profile_pic"></div>
+                                <div id="dashboard-user-title">Welcome Back</div>
+                                
+                                <div class="dashboard_user-divider"></div>
+                                <div id="dashboard-user-name">username</div>
+                                
+                            </div>
+                        </div>
+                        <div id="dashboard_info_group-bottom" style="visibility:none;opacity:0;">
+                            <div class="dashboard_info-captcha">
+                                <br>
+                                <span class="dashboard_main_text" style="margin:20px;">Captcha Overview</span>
+                                <table id="dashboard_captcha-table" style="margin:20px;">
+                                    <thead>
+                                        <tr>
+                                            <th class="dashboard_th" style="width:180px;">Email</th>
+                                            <th class="dashboard_th">Rating</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dashboard_captcha-main_table">
+                                    </tbody>
+                                </table>
+                            
+                            </div>
+                            <div class="dashboard_info-performance">
+                                <br>
+                                <span class="dashboard_main_text" style="margin:20px;">Performance</span>
+                                <div id="dashboard-cpu" class="dashboard-big_frame">
+                                    <div class="dashboard-monitor">
+                                        <span class="dashboard-monitor-title">CPU Usage</span>
+                                        <span id="dashboard-cpu_use-value" class="dashboard-monitor-value">0%</span>
+                                    </div>
+                                    <div id="dashboard-cpu_chart" class="dashboard-chart"></div>
+                                </div>
+                                <div id="dashboard-mem" class="dashboard-big_frame">
+                                    <div class="dashboard-monitor">
+                                        <span class="dashboard-monitor-title">Memory</span>
+                                        <span id="dashboard-mem_use-value" class="dashboard-monitor-value">0%</span>
+                                    </div>
+                                    <div id="dashboard-mem_chart" class="dashboard-chart"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        Plotly.plot('dashboard-cpu_chart',[{
+                            y:[0],
+                            hovermode:false,
+                            hoverinfo: 'none',
+                            mode:'lines',
+                            type:'scatter',
+                            fill: 'tozeroy',
+                            
+                            line: {
+                                color: 'rgb(129,206,240)',
+                                width: 3
+                            }
+                            }],
+                            {
+                            autosize: false,
+                            width: 200,
+                            height: 114,
+                            margin: {
+                                l: 0,
+                                r: 0,
+                                b: 0,
+                                t: 0,
+                                pad: 0
+                            },
+                            xaxis:{
+                                'showgrid':false,
+                                'zeroline':false,
+                                'visible':false
+                            },
+                            yaxis:{
+                                'showgrid':false,
+                                'zeroline':false,
+                                'visible':false,
+                                range:[0,100]
+                
+                            },
+                            paper_bgcolor: 'rgba(0,0,0,0)',
+                            plot_bgcolor: 'rgba(0,0,0,0)'
+                        },
+                        {displayModeBar: false}
+                        
+                        
+                        );
+                
+                        Plotly.plot('dashboard-mem_chart',[{
+                            y:[0],
+                            hovermode:false,
+                            hoverinfo: 'none',
+                            mode:'lines',
+                            type:'scatter',
+                            fill: 'tozeroy',
+                            line: {
+                                color: 'rgb(129,206,240)',
+                                width: 3
+                            }
+                            }],
+                            {
+                            autosize: false,
+                            width: 200,
+                            height: 114,
+                            margin: {
+                                l: 0,
+                                r: 0,
+                                b: 0,
+                                t: 0,
+                                pad: 0
+                            },
+                            xaxis:{
+                                'showgrid':false,
+                                'zeroline':false,
+                                'visible':false
+                            },
+                            yaxis:{
+                                'showgrid':false,
+                                'zeroline':false,
+                                'visible':false,
+                                range:[0,100]
+                
+                            },
+                            paper_bgcolor: 'rgba(0,0,0,0)',
+                            plot_bgcolor: 'rgba(0,0,0,0)'
+                        },
+                        {displayModeBar: false}
+                        
+                        
+                        );
+                    </script>
+                </div>
+        
+                <div id="captcha_page" style="visibility:none;opacity:0;">
+                    <style scoped>
+                        @import "style/captcha.css";
+                    </style>
+    
+                    
+    
+                    <div id="captcha_groups"></div>
+    
+                    <div id="captcha_control">
+                        <div id="captcha_control-add" onclick="show_popup_account_add()">
+                            <div id="captcha_control-add-icon"></div>
+                            <span id="captcha_control-add-text">Add Account</span>
+                        </div>
+                        <div id="captcha_control-start_all" class="captcha_control-button" onclick="start_all_tasks()">
+                            <div id="captcha_control-start_all-img"></div>
+                            <span class="captcha_control-button-text">Start All</span>
+                        </div>
+                        <div id="captcha_control-stop_all" class="captcha_control-button" onclick="stop_all_tasks()">
+                            <div id="captcha_control-stop_all-img"></div>
+                            <span class="captcha_control-button-text">Stop All</span>
+                        </div>
+                        <div id="captcha_control-import" class="captcha_control-button" onclick="show_popup_account_import()">
+                            <div id="captcha_control-import-img"></div>
+                            <span class="captcha_control-button-text">Import</span>
+                        </div>
+                        <div id="captcha_control-export" class="captcha_control-button" onclick="show_popup_account_export()">
+                            <div id="captcha_control-export-img"></div>
+                            <span class="captcha_control-button-text">Export</span>
+                        </div>
+                    </div>
+            
+                    <div id="captcha-main_body">
+                        <div id="task_details">
+            
+                            <span class="task-title">Task Details</span><br><br>
+                            <div id="task_details-cpu" class="task_details-big_frame">
+                                <div class="task_details-monitor">
+                                    <span class="task_details-monitor-title">CPU Usage</span>
+                                    <span id="cpu_use-value" class="task_details-monitor-value">0%</span>
+                                </div>
+                                <div id="task_details-cpu_chart" class="task_details-chart"></div>
+                            </div>
+                            <div id="task_details-mem" class="task_details-big_frame">
+                                <div class="task_details-monitor">
+                                    <span class="task_details-monitor-title">Memory</span>
+                                    <span id="mem_use-value" class="task_details-monitor-value">0%</span>
+                                </div>
+                                <div id="task_details-mem_chart" class="task_details-chart"></div>
+                            </div>
+                        
+                            <span id="task_details-statistics-title">Statistics</span><br>
+            
+                            <div id="task_details-high" class="task_details-small_frame">
+                                <div id="task_details-score_high-icon"></div>
+                                <span id="high_score-value" class="task_details-score-value">0</span>
+                                <span class="task_details-score-description">0.9 Captcha Score</span>
+                            </div>
+            
+                            <div id="task_details-medium" class="task_details-small_frame">
+                                <div id="task_details-score_medium-icon"></div>
+                                <span id="medium_score-value" class="task_details-score-value">0</span>
+                                <span class="task_details-score-description">0.5-0.8 Captcha Score</span>
+                            </div>
+                                
+                            <div id="task_details-low" class="task_details-small_frame">
+                                <div id="task_details-score_low-icon"></div>
+                                <span id="low_score-value" class="task_details-score-value">0</span>
+                                <span class="task_details-score-description">0.1-0.4 Captcha Score</span>
+                            </div>
+            
+                            <div id="task_details-none" class="task_details-small_frame">
+                                <div id="task_details-score_none-icon"></div>
+                                <span id="none_score-value" class="task_details-score-value">0</span>
+                                <span class="task_details-score-description">Not Tested</span>
+                            </div>   
+                        </div>
+                        <div id="task_viewer">
+                            <div>
+                                <span class="task-title" >Accounts</span>
+                                <div id="task_viewer-tasks">
+                                    <span id="task_viewer-tasks-text">0</span>
+                                </div>
+                            </div><br><br>
+                            
+                            <table id="task_viewer-table" style="margin-top:24px;">
+                                <thead>
+                                    <tr>
+                                        <th style="width:200px;">Email</th>
+                                        <th style="width:100px;">Status</th>
+                                        <th>Rating</th>
+                                        <th style="width:48px;">Actions</th>
+                                        <th style="width:112px;">Modify</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="captcha-main_table">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+               
+                    <script>
+                        Plotly.plot('task_details-cpu_chart',[{
+                            y:[0],
+                            hovermode:false,
+                            hoverinfo: 'none',
+                            mode:'lines',
+                            type:'scatter',
+                            fill: 'tozeroy',
+                            
+                            line: {
+                                color: 'rgb(129,206,240)',
+                                width: 3
+                            }
+                            }],
+                            {
+                            autosize: false,
+                            width: 200,
+                            height: 114,
+                            margin: {
+                                l: 0,
+                                r: 0,
+                                b: 0,
+                                t: 0,
+                                pad: 0
+                            },
+                            xaxis:{
+                                'showgrid':false,
+                                'zeroline':false,
+                                'visible':false
+                            },
+                            yaxis:{
+                                'showgrid':false,
+                                'zeroline':false,
+                                'visible':false,
+                                range:[0,100]
+                
+                            },
+                            paper_bgcolor: 'rgba(0,0,0,0)',
+                            plot_bgcolor: 'rgba(0,0,0,0)'
+                        },
+                        {displayModeBar: false}
+                        
+                        
+                        );
+                
+                        Plotly.plot('task_details-mem_chart',[{
+                            y:[0],
+                            hovermode:false,
+                            hoverinfo: 'none',
+                            mode:'lines',
+                            type:'scatter',
+                            fill: 'tozeroy',
+                            line: {
+                                color: 'rgb(129,206,240)',
+                                width: 3
+                            }
+                            }],
+                            {
+                            autosize: false,
+                            width: 200,
+                            height: 114,
+                            margin: {
+                                l: 0,
+                                r: 0,
+                                b: 0,
+                                t: 0,
+                                pad: 0
+                            },
+                            xaxis:{
+                                'showgrid':false,
+                                'zeroline':false,
+                                'visible':false
+                            },
+                            yaxis:{
+                                'showgrid':false,
+                                'zeroline':false,
+                                'visible':false,
+                                range:[0,100]
+                
+                            },
+                            paper_bgcolor: 'rgba(0,0,0,0)',
+                            plot_bgcolor: 'rgba(0,0,0,0)'
+                        },
+                        {displayModeBar: false}
+                        
+                        
+                        );
+                    </script>
+                </div>
+    
+                <div id="profiles_page" style="visibility:none;opacity:0;">
+    
+                    <style scoped>
+                        @import "style/profiles.css";
+                    </style>
+                    <div id="profile_groups"></div>
+                            
+                    <div id="profile_control">
+                        <div id="profile_control-add" onclick="show_popup_profile_add()">
+                            <div id="profile_control-add-icon"></div>
+                            <span id="profile_control-add-text">Add Profile</span>
+                        </div>
+                        <div id="profile_control-delete" class="profile_control-button" onclick="show_popup_profile_remove()">
+                            <div id="profile_control-delete-img"></div>
+                            <span class="profile_control-button-text">Delete</span>
+                        </div>
+                        <div id="profile_control-import" class="profile_control-button" onclick="show_popup_profile_import()">
+                            <div id="profile_control-import-img"></div>
+                            <span class="profile_control-button-text">Import</span>
+                        </div>
+                        <div id="profile_control-export" class="profile_control-button" onclick="show_popup_profile_export()">
+                            <div id="profile_control-export-img"></div>
+                            <span class="profile_control-button-text">Export</span>
+                        </div>
+                        <div id="profile_control-jig" class="profile_control-button" onclick="show_popup_profile_jig()">
+                            <div id="profile_control-jig-img"></div>
+                            <span class="profile_control-button-text">Jig</span>
+                        </div>
+                        <div id="profile_control-move" class="profile_control-button" onclick="show_popup_profile_move()">
+                            <div id="profile_control-move-img"></div>
+                            <span class="profile_control-button-text">Move</span>
+                        </div>
+                    </div>
+    
+                    <div id="profiles-main_body">
+                        <div id="profile_details">
+                            <span class="profile-title">Quick Edit</span><br>
+                            
+                            <input type="text" id="quick_edit-name" class="profile_quick_edit-input" placeholder="Name"></input>
+                            <input type="text" id="quick_edit-email" class="profile_quick_edit-input" placeholder="Email"></input>
+                            <input type="text" id="quick_edit-phone" class="profile_quick_edit-input" placeholder="Phone"></input>
+                            <input type="text" id="quick_edit-address" class="profile_quick_edit-line1-input" placeholder="Line 1"></input>
+                            <input type="text" id="quick_edit-address2" class="profile_quick_edit-line2-input" placeholder="Line 2"></input>
+                            <input type="text" id="quick_edit-zip" class="profile_quick_edit-zip-input" placeholder="Zip Code"></input>
+                            <input type="text" id="quick_edit-city" class="profile_quick_edit-city-input" placeholder="City"></input>
+                            
+                            <select id="quick_edit-country" class="profile_quick_edit-state_country-select">
+                                <option value="">Select Country</option>
+                            </select>
+                            <select id="quick_edit-state" class="profile_quick_edit-state_country-select">
+                                <option value="">Select State</option>
+                            </select>
+                            
+    
+                            <script language="javascript">
+                                populateCountries("quick_edit-country", "quick_edit-state");
+                            </script>
+    
+    
+                            <div class="profile_quick_edit-card-background">
+                                <select id="quick_edit-card_type" class="profile_quick_edit-card_type-select">
+                                    <option value="">Type</option>
+                                    <option value="Visa">Visa</option>
+                                    <option value="MasterCard">MasterCard</option>
+                                    <option value="Amex">Amex</option>
+                                    <option value="Discover">Discover</option>
+                                </select>
+                                <input type="text" id="quick_edit-card_name" class="profile_quick_edit-card_name-input" placeholder="Card Name"></input>
+                                <input type="number" id="quick_edit-card_number" class="profile_quick_edit-card_number-input" placeholder="Card Number"></input>
+                                <select id="quick_edit-card_exp_mo" class="profile_quick_edit-card_exp-select">
+                                    <option value="">mo</option>
+                                    <option value="01">01</option>
+                                    <option value="02">02</option>
+                                    <option value="03">03</option>
+                                    <option value="04">04</option>
+                                    <option value="05">05</option>
+                                    <option value="06">06</option>
+                                    <option value="07">07</option>
+                                    <option value="08">08</option>
+                                    <option value="09">09</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                </select>
+                                <p class="profile_quick_edit-card_exp_div">/</p>
+                                <select id="quick_edit-card_exp_yr" class="profile_quick_edit-card_exp-select">
+                                    <option value="">yr</option>
+                                    <option value="20">20</option>
+                                    <option value="21">21</option>
+                                    <option value="22">22</option>
+                                    <option value="23">23</option>
+                                    <option value="24">24</option>
+                                    <option value="25">25</option>
+                                    <option value="26">26</option>
+                                    <option value="27">27</option>
+                                    <option value="28">28</option>
+                                    <option value="29">29</option>
+                                    <option value="30">30</option>
+                                    <option value="31">31</option>
+                                    <option value="32">32</option>
+                                </select>
+                                <input type="text" id="quick_edit-card_cvv" class="profile_quick_edit-card_cvv-input" placeholder="CVV"></input>
+                            </div>
+                            <div class="profile_quick_edit-checkbox">
+                                <p class="checkbox_text">Checkout Once</p>
+                                <label class="checkbox_container">
+                                    <input id="quick_edit-checkout_once" type="checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <div class="profile_quick_edit-checkbox">
+                                <p class="checkbox_text">Same Shipping</p>
+                                <label class="checkbox_container">
+                                    <input id="quick_edit-same_shipping" type="checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <div class="profile_quick_edit-button" style="margin-right:5px;" onclick="quick_edit_profile_save()">
+                                <span class="profile_quick_edit-button-text">Save</span>
+                            </div>
+                            <div class="profile_quick_edit-button" onclick="show_popup_profile_edit()">
+                                <span class="profile_quick_edit-button-text">Edit Details</span>
+                            </div>
+                        </div>
+                        <div id="profile_viewer">
+                            <div>
+                                <span class="profile-title" >Profiles</span>
+                                <div id="profile_viewer-profiles">
+                                    <span id="profile_viewer-profiles-text">0</span>
+                                </div><br><br>
+                                
+                                <table id="profile_viewer-table" style="margin-top:24px;">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:15px;">#</th>
+                                            <th style="min-width:220px;">Profile</th>
+                                            <th style="min-width:250px;">Name</th>
+                                            <th style="min-width:250px;">Address</th>
+                                            <th style="max-width:25px;">
+                                                <label class="checkbox_container" >
+                                                    <input type="checkbox" id="profiles-header_checkbox" onclick="check_all_in_profiles_table()">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="profiles-main_table">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+    
+                <div id="cards_page" style="visibility:none;opacity:0;">
+                    <style scoped>
+                        @import "style/cards.css";
+                    </style>
+    
+                    <div id="card_groups"></div>
+    
+                    <div id="card_control">
+                        <div id="card_control-add" onclick="show_popup_cards_add_account()">
+                            <div id="card_control-add-icon"></div>
+                            <span id="card_control-add-text">Add Account</span>
+                        </div>
+    
+                        <div id="card_control-delete" class="card_control-button" onclick="show_popup_cards_remove()">
+                            <div id="card_control-delete-img"></div>
+                            <span class="card_control-button-text">Delete</span>
+                        </div>
+    
+                        <div id="card_control-export" class="card_control-button" onclick="show_popup_cards_export()">
+                            <div id="card_control-export-img"></div>
+                            <span class="card_control-button-text">Export</span>
+                        </div>
+    
+                        <div id="card_control-move" class="card_control-button" onclick="show_popup_cards_move()">
+                            <div id="card_control-move-img"></div>
+                            <span class="card_control-button-text">Move</span>
+                        </div>
+    
+                    </div>
+    
+                    <div id="cards-main_body">
+                        <div id="card_accounts">
+                            <span class="cards-title">Accounts</span>
+                            
+                            <br><br><br><br>
+    
+                            <span class="card_text-account-left">Type </span>
+                            <select id="cards-type_select" class="card_dropdown-account-select">
+                                <option value="">Select</option>
+                                <option value="privacy">Privacy</option>
+                            </select>
+    
+                            <br><br><br>
+    
+                            <span class="card_text-account-left">Account </span>
+                            <select id="cards-account_select" class="card_dropdown-account-select">
+                                <option value="">Select</option>
+                            </select>
+    
+                            <br><br><br>
+    
+                            <span class="card_text-account-left">Amount</span>
+                            <input type="number" id="cards-amount_input" class="card_import_amount-input" placeholder="1"></input>
+    
+                            <br><br><br>
+    
+                            <div id="cards-import_cards_button" class="card_accounts-add" onclick="import_account_cards()" style="width:130px;margin-right:20px;">
+                                <span id="cards-import_cards_button-text" class="card_accounts-add-text">Import Cards</span>
+                            </div>
+                            <div class="red-btn" onclick="remove_card_account()" style="width:150px;">
+                                <span class="red-btn-text">Remove Account</span>
+                            </div>
+    
+                            <br><br><br><br><br>
+    
+                            <span class="cards-title">Card Detail</span>
+    
+                            <br><br>
+    
+                            <div class="card_viewer-card-background">
+                                <span id="card_viewer-name" class="card_text-account-left">No Name</span>
+                                <span id="card_viewer-type" class="card_text-account-right">Visa</span>
+                                <br><br><br>
+                                <span id="card_viewer-number" class="card_text-account-left">0000000000000000</span>
+                                <br><br><br>
+                                <span id="card_viewer-expiry" class="card_text-account-left">02/24</span>
+                                <spa id="card_viewer-cvv"n class="card_text-account-right">123</span>
+                            </div>
+    
+                        </div>
+                        <div id="card_viewer">
+                            <div>
+                                <span class="cards-title">Cards</span>
+                                <div id="card_viewer-amount">
+                                    <span id="card_viewer-amount-text">0</span>
+                                </div><br><br>
+                                <table id="card_viewer-table" style="margin-top:24px;">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:15px;">#</th>
+                                            <th style="min-width:180px;">Name</th>
+                                            <th style="min-width:200px;">Number</th>
+                                            <th style="min-width:160px;">Expiry</th>
+                                            <th style="min-width:160px;">Type</th>
+                                            <th style="max-width:25px;">
+                                                <label class="checkbox_container" >
+                                                    <input type="checkbox" id="cards-header_checkbox" onclick="check_all_in_cards_table()">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cards-main_table">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+    
+                </div>
+            </div>
+
+            <script>
+                var cpu_count = 0;
+                var mem_count = 0;
+        
+                ipcRenderer.on('cpu',(event,data) => {
+                    cpu_count++;
+                    document.getElementById('dashboard-cpu_use-value').innerHTML = parseInt(data).toString() + "%";
+                    Plotly.extendTraces('dashboard-cpu_chart',{y:[[parseInt(data)]]},[0]);
+                    
+                    if(cpu_count > 25) {
+                        Plotly.relayout('dashboard-cpu_chart',{
+                            xaxis: {
+                                'showgrid':false,
+                                'zeroline':false,
+                                'visible':false,
+                                range: [cpu_count-25,cpu_count]
+                            }
+                        })
+                    }
+
+                    document.getElementById('cpu_use-value').innerHTML = parseInt(data).toString() + "%";
+                    Plotly.extendTraces('task_details-cpu_chart',{y:[[parseInt(data)]]},[0]);
+                    
+                    if(cpu_count > 25) {
+                        Plotly.relayout('task_details-cpu_chart',{
+                            xaxis: {
+                                'showgrid':false,
+                                'zeroline':false,
+                                'visible':false,
+                                range: [cpu_count-25,cpu_count]
+                            }
+                        })
+                    }
+                });
+                ipcRenderer.on('mem',(event,data) => {
+                    mem_count++;
+                    document.getElementById('dashboard-mem_use-value').innerHTML = parseInt(data).toString() + "%";
+                    Plotly.extendTraces('dashboard-mem_chart',{y:[[parseInt(data)]]},[0]);
+                    
+                    if(mem_count > 25) {
+                        Plotly.relayout('dashboard-mem_chart',{
+                            xaxis: {
+                                'showgrid':false,
+                                'zeroline':false,
+                                'visible':false,
+                                range: [mem_count-25,mem_count]
+                            }
+                        })
+                    }
+
+                    document.getElementById('mem_use-value').innerHTML = parseInt(data).toString() + "%";
+                    Plotly.extendTraces('task_details-mem_chart',{y:[[parseInt(data)]]},[0]);
+                    
+                    if(mem_count > 25) {
+                        Plotly.relayout('task_details-mem_chart',{
+                            xaxis: {
+                                'showgrid':false,
+                                'zeroline':false,
+                                'visible':false,
+                                range: [mem_count-25,mem_count]
+                            }
+                        })
+                    }
+                });
+            </script>
+
+            <script>
+                function hideUserSection() {
+                    var userSection = document.getElementById("user_section");
+                    var dropDown = document.getElementById("menu_dropdown");
+                    if(userSection.style.visibility === "hidden") {
+                        return
+                    } else {
+                        userSection.style.visibility = "hidden";
+                        userSection.style.opacity = "0";
+                        dropDown.style.transform = 'rotate(0deg)';
+                    }
+                }
+            </script>
+            
+        </div>
+        
+
+
+        <div id="user_section" style="visibility:hidden;opacity:0;">
+            <div id="user_section-head">
+                <div id="user_section-head-profile_pic"></div>
+                <div>
+                    <span id="user_section-head-title">Welcome back</span>
+                    <span id="user_section-head-usr">Username</span>
+                </div>    
+            </div>
+            
+            <div class="horizontal_divider" style="margin:5px 20px; width:auto;"></div>
+    
+            <div id="user_section-info">
+                <div class="user_section-info-item">
+                    <span class="user_section-info-label">Your Membership</span>
+                    <span id="user_section-info-membership" class="user_section-info-value" style="color:#49B3A8;">Active</span>
+                </div>
+                <div class="user_section-info-item">
+                    <span class="user_section-info-label">Type</span>
+                    <span id="user_section-info-type" class="user_section-info-value">$15 Monthly</span>
+                </div>
+                <div class="user_section-info-item">
+                    <span class="user_section-info-label">Renewal Date</span>
+                    <span id="user_section-info-renewal" class="user_section-info-value">11/23/2020</span>
+                </div>
+            </div>
+    
+            <div class="horizontal_divider" style="margin:5px 20px; width:auto;"></div>
+    
+            <div id="user_section-buttons">
+                <div id="user_section-buttons-deactivate">
+                    <span class="user_section-button-text" onclick="deactivate_device()">Deactivate Device</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="popup-no_selection" class="popup_small" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Selection</span><br><br>
+            <span class="popup-description">Please make a selection.</span><br><br><br>
+            <div class="add-btn" onclick="hide_popup_no_selection()">
+                <span class="add-btn-text">Close</span>
+            </div>
+        </div>
+
+
+
+        <div id="popup-account_group_edit" class="popup_medium" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Edit Account Group</span><br><br><br>
+            <input type="text" id="popup-account_group_edit-input" class="popup-input_large" placeholder="Group Name..."></input><br><br><br><br>
+            <div class="add-btn" onclick="edit_account_group_confirm()">
+                <div class="add-btn-icon"></div>
+                <span class="add-btn-text">Edit Group</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_account_group_edit()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+
+        <div id="popup-account_group_name" class="popup_medium" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Add Account Group</span><br><br><br>
+            <input type="text" id="popup-account_group_name-input" class="popup-input_large" placeholder="Group Name..."></input><br><br><br><br>
+            <div class="add-btn" onclick="add_account_group()">
+                <div class="add-btn-icon"></div>
+                <span class="add-btn-text">Add Group</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_account_group_name()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+    
+        <div id="popup-account_group_remove" class="popup_small" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Verify Action</span><br><br>
+            <span class="popup-description">Are you sure you want to remove this account group?</span><br><br>
+            <div class="red-btn" onclick="remove_account_group_confirm()">
+                <span class="red-btn-text">Remove</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_account_group_remove()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+    
+        <div id="popup-account_add" class="popup_large" style="visibility:hidden;opacity:0;height:390px;">
+            <span class="popup-title">Add Account</span><br><br>
+            <span class="popup-text">Email Login</span><br>
+            <div>
+                <input type="text" id="popup-account_add_email" class="profile_edit-input" placeholder="email address"></input>
+                <input type="text" id="popup-account_add_pass" class="profile_edit-input" placeholder="password"></input><br><br>
+            </div>
+            
+    
+            <span class="popup-text">Recovery Info</span><br>
+            <input type="text" id="popup-account_add_recovery" class="profile_edit-input" placeholder="email address"></input><br><br>
+            
+            <span class="popup-text">Proxy</span><br>
+            <input type="text" id="popup-account_add_proxy" class="profile_edit-input" placeholder="ip:port:user:pass"></input><br><br><br>
+            <div class="add-btn" onclick="add_account()">
+                <div class="add-btn-icon"></div>
+                <span class="add-btn-text">Add Account</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_account_add()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+    
+        <div id="popup-account_remove" class="popup_small" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Verify Action</span><br><br>
+            <span class="popup-description">Are you sure you want to REMOVE this account?</span><br><br>
+            <div class="red-btn" onclick="remove_account_confirm()">
+                <span class="red-btn-text">Remove</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_account_remove()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+    
+        <div id="popup-account_edit" class="popup_large" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Edit Account</span><br><br>
+            <span class="popup-text">Email Login</span><br>
+            <div>
+                <input type="text" id="popup-account_edit_email" class="popup-input_medium" placeholder="email address"></input>
+                <input type="text" id="popup-account_edit_pass" class="popup-input_medium" placeholder="password"></input><br><br>
+            </div>
+            
+    
+            <span class="popup-text">Recovery Info</span><br>
+            <input type="text" id="popup-account_edit_recovery" class="popup-input_medium" placeholder="recovery email"></input><br><br>
+            
+            <span class="popup-text">Proxy</span><br>
+            <input type="text" id="popup-account_edit_proxy" class="popup-input_medium" placeholder="ip:port:user:pass"></input><br><br><br>
+            <div class="add-btn" onclick="edit_account_confirm()">
+                <span class="add-btn-text">Edit Account</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_account_edit()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+    
+        <div id="popup-start_browser" class="popup_small" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Verify Action</span><br><br>
+            <span class="popup-description">Are you sure you want to start task as browser mode?</span><br><br>
+            <div class="red-btn" onclick="start_browser_task_confirm()">
+                <span class="red-btn-text">Start</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_browser_task()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+    
+        <div id="popup-test_captcha" class="popup_large" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Verify Action</span><br><br>
+            <span class="popup-description">Are you sure you want to test captcha? It is advised to only test once every 24 hours. Testing can lower your captcha score.</span><br><br><br>
+            <div class="add-btn" onclick="test_captcha_confirm(0)">
+                <span class="add-btn-text">V3 Score</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_test_captcha()">
+                <span class="norm-btn-text">Cancel</span>
+            </div><br><br><br>
+    
+            <div class="add-btn" onclick="test_captcha_confirm(1)">
+                <span class="add-btn-text">V2 Checkbox</span>
+            </div><br><br><br>
+            <div class="add-btn" onclick="test_captcha_confirm(2)">
+                <span class="add-btn-text">V2 Invisible</span>
+            </div>
+        </div>
+
+        <div id="popup-account_import" class="popup_medium" style="height:300px;visibility:hidden;opacity:0;">
+            <span class="popup-title">Import Accounts</span><br><br>
+            <textarea  id="account-import-values" rows="12" cols="62" placeholder="email;password;recovery;proxy"></textarea><br><br>
+
+            <div class="add-btn" onclick="import_accounts()">
+                <div class="add-btn-icon"></div>
+                <span class="add-btn-text">Import Accounts</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_account_import()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+
+        <div id="popup-account_export" class="popup_large" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Export Accounts</span><br><br>
+            <textarea id="account-export-values" rows="12" cols="62" placeholder="email;password;recovery;proxy"></textarea><br><br>
+
+            <div class="add-btn" onclick="hide_popup_account_export()">
+                <span class="add-btn-text">Close</span>
+            </div>
+        </div>
+
+
+
+        <div id="popup-profiles_group_edit" class="popup_medium" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Edit Profile Group</span><br><br><br>
+            <input type="text" id="popup-profiles_group_edit-input" class="popup-input_large" placeholder="Group Name..."></input><br><br><br><br>
+            <div class="add-btn" onclick="edit_profiles_group_confirm()">
+                <div class="add-btn-icon"></div>
+                <span class="add-btn-text">Edit Group</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_profiles_group_edit()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+
+        <div id="popup-profiles_group_name" class="popup_medium" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Add Profile Group</span><br><br><br>
+            <input type="text" id="popup-profile_group_name-input" class="popup-input_large" placeholder="Group Name..."></input><br><br><br><br>
+            <div class="add-btn" onclick="add_profiles_group()">
+                <div class="add-btn-icon"></div>
+                <span class="add-btn-text">Add Group</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_profiles_group_name()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+    
+        <div id="popup-profiles_group_remove" class="popup_small" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Verify Action</span><br><br>
+            <span class="popup-description">Are you sure you want to remove this profile group?</span><br><br>
+            <div class="red-btn" onclick="remove_profiles_group_confirm()">
+                <span class="red-btn-text">Remove</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_profiles_group_remove()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+    
+        <div id="popup-profile_add" class="popup_xl" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Add Profile</span>
+            
+            <input style="margin-left:35px; width:150px;" type="text" id="add-profile-name" class="profile_edit-input" placeholder="Profile Name"></input>
+    
+            <br>
+            
+            <div class="profile_edit-div">
+                <span class="popup-description">Billing</span><br>
+                <input type="text" id="add-billing-name" class="profile_edit-input" placeholder="Name"></input>
+                <input type="text" id="add-billing-email" class="profile_edit-input" placeholder="Email"></input>
+                <input type="text" id="add-billing-phone" class="profile_edit-input" placeholder="Phone"></input>
+                <input type="text" id="add-billing-address1" class="profile_edit-input" placeholder="Address Line 1"></input>
+                <input type="text" id="add-billing-address2" class="profile_edit-input" placeholder="Address Line 2"></input>
+                <input type="text" id="add-billing-zip" class="profile_edit-zip-input" placeholder="Zip Code"></input>
+                <input type="text" id="add-billing-city" class="profile_edit-city-input" placeholder="City"></input>
+                
+                <select id="add-billing-country" class="profile_edit-state_country-select">
+                    <option value="">Select Country</option>
+                </select>
+                <select id="add-billing-state" class="profile_edit-state_country-select">
+                    <option value="">Select State</option>
+                </select>
+    
+                <script language="javascript">
+                    populateCountries("add-billing-country", "add-billing-state");
+                </script>
+            </div>
+    
+            <div class="profile_edit-div">
+                <span class="popup-description">Shipping</span><br>
+                <input type="text" id="add-shipping-name" class="profile_edit-input" placeholder="Name"></input>
+                <input type="text" id="add-shipping-email" class="profile_edit-input" placeholder="Email"></input>
+                <input type="text" id="add-shipping-phone" class="profile_edit-input" placeholder="Phone"></input>
+                <input type="text" id="add-shipping-address1" class="profile_edit-input" placeholder="Address Line 1"></input>
+                <input type="text" id="add-shipping-address2" class="profile_edit-input" placeholder="Address Line 2"></input>
+                <input type="text" id="add-shipping-zip" class="profile_edit-zip-input" placeholder="Zip Code"></input>
+                <input type="text" id="add-shipping-city" class="profile_edit-city-input" placeholder="City"></input>
+                
+                <select id="add-shipping-country" class="profile_edit-state_country-select">
+                    <option value="">Select Country</option>
+                </select>
+                <select id="add-shipping-state" class="profile_edit-state_country-select">
+                    <option value="">Select State</option>
+                </select>
+    
+                <script language="javascript">
+                    populateCountries("add-shipping-country", "add-shipping-state");
+                </script>
+            </div>
+    
+            <div class="profile_edit-div">
+                <span class="popup-description">Card</span><br>
+                <div class="profile_edit-card-background">
+                    <select id="add-card_type" class="profile_edit-card_type-select">
+                        <option value="">Type</option>
+                        <option value="Visa">Visa</option>
+                        <option value="MasterCard">MasterCard</option>
+                        <option value="Amex">Amex</option>
+                        <option value="Discover">Discover</option>
+                    </select>
+                    <input type="text" id="add-card_name" class="profile_edit-card_name-input" placeholder="Card Name"></input>
+                    <input type="number" id="add-card_number" class="profile_edit-card_number-input" placeholder="Card Number"></input>
+                    <select id="add-card_exp_mo" class="profile_edit-card_exp-select">
+                        <option value="">mo</option>
+                        <option value="01">01</option>
+                        <option value="02">02</option>
+                        <option value="03">03</option>
+                        <option value="04">04</option>
+                        <option value="05">05</option>
+                        <option value="06">06</option>
+                        <option value="07">07</option>
+                        <option value="08">08</option>
+                        <option value="09">09</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                    </select>
+                    <p class="profile_edit-card_exp_div">/</p>
+                    <select id="add-card_exp_yr" class="profile_edit-card_exp-select">
+                        <option value="">yr</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="25">25</option>
+                        <option value="26">26</option>
+                        <option value="27">27</option>
+                        <option value="28">28</option>
+                        <option value="29">29</option>
+                        <option value="30">30</option>
+                        <option value="31">31</option>
+                        <option value="32">32</option>
+                    </select>
+                    <input type="text" id="add-card_cvv" class="profile_edit-card_cvv-input" placeholder="CVV"></input>
+                </div>
+    
+                <div class="profile_edit-checkbox">
+                    <p class="checkbox_text">Same Shipping</p>
+                    <label class="checkbox_container">
+                        <input id="add-same_shipping" type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                </div><br>
+    
+                <div class="profile_edit-checkbox">
+                    <p class="checkbox_text">Checkout Once</p>
+                    <label class="checkbox_container">
+                        <input id="add-checkout_once" type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                </div><br>
+    
+                <div class="profile_edit-checkbox">
+                    <p class="checkbox_text">Same Names</p>
+                    <label class="checkbox_container">
+                        <input id="add-same_names" type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+            </div>
+            
+    
+            <div class="add-btn" onclick="add_profile()" style="margin-top:40px;">
+                <div class="add-btn-icon"></div>
+                <span class="add-btn-text">Add Profile</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_profile_add()" style="margin-top:40px;">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+    
+        <div id="popup-profile_edit" class="popup_xl" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Edit Profile</span>
+            
+            <input style="margin-left:35px; width:150px;" type="text" id="edit-profile-name" class="profile_edit-input" placeholder="Profile Name"></input>
+    
+            <br>
+            
+            <div class="profile_edit-div">
+                <span class="popup-description">Billing</span><br>
+                <input type="text" id="edit-billing-name" class="profile_edit-input" placeholder="Name"></input>
+                <input type="text" id="edit-billing-email" class="profile_edit-input" placeholder="Email"></input>
+                <input type="text" id="edit-billing-phone" class="profile_edit-input" placeholder="Phone"></input>
+                <input type="text" id="edit-billing-address1" class="profile_edit-input" placeholder="Address Line 1"></input>
+                <input type="text" id="edit-billing-address2" class="profile_edit-input" placeholder="Address Line 2"></input>
+                <input type="text" id="edit-billing-zip" class="profile_edit-zip-input" placeholder="Zip Code"></input>
+                <input type="text" id="edit-billing-city" class="profile_edit-city-input" placeholder="City"></input>
+                
+                <select id="edit-billing-country" class="profile_edit-state_country-select">
+                    <option value="">Select Country</option>
+                </select>
+                <select id="edit-billing-state" class="profile_edit-state_country-select">
+                    <option value="">Select State</option>
+                </select>
+    
+                <script language="javascript">
+                    populateCountries("edit-billing-country", "edit-billing-state");
+                </script>
+            </div>
+    
+            <div class="profile_edit-div">
+                <span class="popup-description">Shipping</span><br>
+                <input type="text" id="edit-shipping-name" class="profile_edit-input" placeholder="Name"></input>
+                <input type="text" id="edit-shipping-email" class="profile_edit-input" placeholder="Email"></input>
+                <input type="text" id="edit-shipping-phone" class="profile_edit-input" placeholder="Phone"></input>
+                <input type="text" id="edit-shipping-address1" class="profile_edit-input" placeholder="Address Line 1"></input>
+                <input type="text" id="edit-shipping-address2" class="profile_edit-input" placeholder="Address Line 2"></input>
+                <input type="text" id="edit-shipping-zip" class="profile_edit-zip-input" placeholder="Zip Code"></input>
+                <input type="text" id="edit-shipping-city" class="profile_edit-city-input" placeholder="City"></input>
+                
+                <select id="edit-shipping-country" class="profile_edit-state_country-select">
+                    <option value="">Select Country</option>
+                </select>
+                <select id="edit-shipping-state" class="profile_edit-state_country-select">
+                    <option value="">Select State</option>
+                </select>
+    
+                <script language="javascript">
+                    populateCountries("edit-shipping-country", "edit-shipping-state");
+                </script>
+            </div>
+    
+            <div class="profile_edit-div">
+                <span class="popup-description">Card</span><br>
+                <div class="profile_edit-card-background">
+                    <select id="edit-card_type" class="profile_edit-card_type-select">
+                        <option value="">Type</option>
+                        <option value="Visa">Visa</option>
+                        <option value="MasterCard">MasterCard</option>
+                        <option value="Amex">Amex</option>
+                        <option value="Discover">Discover</option>
+                    </select>
+                    <input type="text" id="edit-card_name" class="profile_edit-card_name-input" placeholder="Card Name"></input>
+                    <input type="number" id="edit-card_number" class="profile_edit-card_number-input" placeholder="Card Number"></input>
+                    <select id="edit-card_exp_mo" class="profile_edit-card_exp-select">
+                        <option value="">mo</option>
+                        <option value="01">01</option>
+                        <option value="02">02</option>
+                        <option value="03">03</option>
+                        <option value="04">04</option>
+                        <option value="05">05</option>
+                        <option value="06">06</option>
+                        <option value="07">07</option>
+                        <option value="08">08</option>
+                        <option value="09">09</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                    </select>
+                    <p class="profile_edit-card_exp_div">/</p>
+                    <select id="edit-card_exp_yr" class="profile_edit-card_exp-select">
+                        <option value="">yr</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="25">25</option>
+                        <option value="26">26</option>
+                        <option value="27">27</option>
+                        <option value="28">28</option>
+                        <option value="29">29</option>
+                        <option value="30">30</option>
+                        <option value="31">31</option>
+                        <option value="32">32</option>
+                    </select>
+                    <input type="text" id="edit-card_cvv" class="profile_edit-card_cvv-input" placeholder="CVV"></input>
+                </div>
+    
+                <div class="profile_edit-checkbox">
+                    <p class="checkbox_text">Same Shipping</p>
+                    <label class="checkbox_container">
+                        <input id="edit-same_shipping" type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                </div><br>
+    
+                <div class="profile_edit-checkbox">
+                    <p class="checkbox_text">Checkout Once</p>
+                    <label class="checkbox_container">
+                        <input id="edit-checkout_once" type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                </div><br>
+    
+                <div class="profile_edit-checkbox">
+                    <p class="checkbox_text">Same Names</p>
+                    <label class="checkbox_container">
+                        <input id="edit-same_names" type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+            </div>
+            
+    
+            <div class="add-btn" onclick="edit_profile_save()" style="margin-top:40px;">
+                <div class="add-btn-icon"></div>
+                <span class="add-btn-text">Edit Profile</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_profile_edit()" style="margin-top:40px;">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+    
+        <div id="popup-profile_remove" class="popup_small" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Verify Action</span><br><br>
+            <span class="popup-description">Are you sure you want to remove the selection of profiles?</span><br><br>
+            <div class="red-btn" onclick="remove_profiles_confirm()">
+                <span class="red-btn-text">Remove Selection</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_profile_remove()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+    
+        <div id="popup-profile_import" class="popup_small" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Select Import</span><br><br>
+            <select id="profile_import-select" class="profile_import-select">
+                <option value="splash">Splash Tools</option>
+                <option value="aycd">AYCD</option>
+                <option value="balko">Balko Bot</option>
+                <option value="bnb">Better Nike Bot</option>
+                <option value="candypreme">CandyPreme</option>
+                <option value="cyber">Cyber</option>
+                <option value="dashe">Dashe</option>
+                <option value="eve">Eve Aio</option>
+                <option value="ganesh_cli">Ganesh CLI</option>
+                <option value="ganesh_gui">Ganesh GUI</option>
+                <option value="ghost">Ghost</option>
+                <option value="kodai">Kodai</option>
+                <option value="ksr">KSR</option>
+                <option value="mekpreme">MEKPreme</option>
+                <option value="nsb">Nike Shoe Bot</option>
+                <option value="phantom">Phantom</option>
+                <option value="polaris">Polaris</option>
+                <option value="prism">Prism</option>
+                <option value="pd">Project Destroyer</option>
+                <option value="sole">Sole Aio</option>
+                <option value="tks">TheKickStation</option>
+                <option value="tohru">Tohru</option>
+                <option value="tsb">The Shit Bot</option>
+                <option value="velox">Velox</option>
+                <option value="wrath">Wrath</option>
+            </select><br><br><br><br>
+            <div class="add-btn" onclick="import_profiles_confirm()">
+                <span class="add-btn-text">Import</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_profile_import()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+    
+        <div id="popup-profile_import_error" class="popup_small" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Error Importing</span><br><br>
+            <span class="popup-description">Please check the format of your profiles.</span><br><br>
+            <div class="add-btn" onclick="hide_popup_profile_import_error()">
+                <span class="add-btn-text">Ok</span>
+            </div>
+        </div>
+    
+        <div id="popup-profile_export" class="popup_large_tall" style="visibility:hidden;opacity:0;">
+            <span class="popup-title" style="padding-bottom:0px;">Export Profiles</span><br><br>
+
+            <div id="export_option-search">
+                <div id="export_search-icon"></div>
+                <input type="text" id="profiles_export_search" class="export_search" placeholder="Search...">  
+            </div>
+
+            <div id="export_option-viewer">
+                <table id="export_option-table">
+                    <thead>
+                        <tr>
+                            <th style="width:20px;"></th>
+                            <th>Format</th>
+                        </tr>
+                    </thead>
+                    <tbody id="export_option-table_main">
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>Splash Tools</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>AYCD</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>Balko Bot</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>Better Nike Bot</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>CandyPreme</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>Cyber</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>Dashe</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>Eve Aio</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>Ganesh CLI</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>Ganesh GUI</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>Ghost</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>Kodai</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>KSR</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>MEKPreme</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>Nike Shoe Bot</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>Phantom</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>Polaris</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>Prism</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>Project Destroyer</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>Sole Aio</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>TheKickStation</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>Tohru</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>The Shit Bot</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>Velox</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox_container" >
+                                    <input type="checkbox" id="header_checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>Wrath</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="add-btn" style="margin-top:20px;" onclick="export_profiles_confirm()">
+                <span class="add-btn-text">Export Group</span>
+            </div>
+            <div class="norm-btn" style="margin-top:20px;" onclick="hide_popup_profile_export()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+    
+        <div id="popup-profile_move" class="popup_small" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Select Group</span><br><br>
+            <select id="profile_move-select" class="profile_import-select">
+            </select><br><br><br><br>
+            <div class="add-btn" onclick="move_profiles_confirm()">
+                <span class="add-btn-text">Move Selection</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_profile_move()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+    
+        <div id="popup-profile_export_error" class="popup_small" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Error Exporting</span><br><br>
+            <span class="popup-description">Please try again...</span><br><br><br>
+            <div class="add-btn" onclick="hide_popup_profile_export_error()">
+                <span class="add-btn-text">Ok</span>
+            </div>
+        </div>
+    
+        <div id="popup-profile_export_success" class="popup_small" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Success</span><br><br>
+            <span class="popup-description">Successfully exported profiles to desktop.</span><br><br>
+            <div class="add-btn" onclick="hide_popup_profile_export_success()">
+                <span class="add-btn-text">Ok</span>
+            </div>
+        </div>
+
+        <div id="popup-profile_jig" class="popup_large_tall" style="visibility:hidden;opacity:0;height:580px;top:10%;">
+            <span class="popup-title">Jig Profiles</span><br><br>
+
+            <span class="popup-description" style="float:left;margin-top:3px;">Amount per Profile</span>
+
+            <select id="profile_jig-select" class="profile_jig_amount-select" style="margin-left:18px;">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select><br><br><br>
+
+            <span class="popup-description">Info</span><br><br>
+
+            <div class="profile_edit-checkbox" onclick="toggle_name_jig()">
+                <p class="checkbox_text">Jig First Name</p>
+                <label class="checkbox_container">
+                    <input id="jig-first_name" type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            <div class="profile_edit-checkbox" onclick="toggle_name_jig()">
+                <p class="checkbox_text">Jig Last Name</p>
+                <label class="checkbox_container">
+                    <input id="jig-last_name" type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+            </div><br><br>
+            <div id="profile_jig_card" class="profile_edit-checkbox">
+                <p class="checkbox_text">Jig Card Name</p>
+                <label class="checkbox_container">
+                    <input id="jig-card_name" type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+            </div><br><br>
+
+            <div id="profile_jig-email" class="profile_edit-checkbox" onclick="toggle_email_jig()">
+                <p class="checkbox_text">Jig Email</p>
+                <label class="checkbox_container">
+                    <input id="jig-email" type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            <div class="profile_edit-checkbox">
+                <p class="checkbox_text">Jig Phone [US]</p>
+                <label class="checkbox_container">
+                    <input id="jig-phone" type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+            </div><br><br>
+            <div id="profile_jig-catchall-check" class="profile_edit-checkbox">
+                <p class="checkbox_text">Use Catchall</p>
+                <label class="checkbox_container">
+                    <input id="jig-email-catchall" type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            <input type="text" id="profile_jig-catchall-input" class="profile_edit-input" placeholder="@catchall.com" style="width:150px;margin-top:0px;margin-left:14px;padding:5px;"></input>
+            
+            <br>
+
+            <div id="profile_jig-dottrick-check" class="profile_edit-checkbox" style="margin-top:5px;">
+                <p class="checkbox_text">Use Dot Trick</p>
+                <label class="checkbox_container">
+                    <input id="jig-email-dottrick" type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+
+            <br><br><br>
+
+            <span class="popup-description">Address</span><br><br>
+
+            <div class="profile_edit-checkbox" onclick="toggle_address_jig()">
+                <p class="checkbox_text">Jig Billing</p>
+                <label class="checkbox_container">
+                    <input id="jig-billing" type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            <div class="profile_edit-checkbox" onclick="toggle_address_jig()">
+                <p class="checkbox_text">Jig Shipping</p>
+                <label class="checkbox_container">
+                    <input id="jig-shipping" type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+            </div><br><br>
+
+
+            <p id="profile_jig-line1_text1" class="profile_jig-text" style="width:60px;">Line 1 - </p>
+            <select id="profile_jig-line1-param" class="profile_jig_amount-select" style="width:80px;">
+                <option value="0">before</option>
+                <option value="1">after</option>
+                <option value="2">both</option>
+            </select>
+            <p id="profile_jig-line1_text2" class="profile_jig-text"> Character # - </p>
+            <select id="profile_jig-line1" class="profile_jig_amount-select">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+            <br>
+
+            <p id="profile_jig-line2_text1" class="profile_jig-text" style="margin-top:11px;width:60px;">Line 2 - </p>
+            <select id="profile_jig-line2-param" class="profile_jig_amount-select" style="margin-top:4px;width:80px;">
+                <option value="0">before</option>
+                <option value="1">after</option>
+                <option value="2">both</option>
+            </select> 
+            <p id="profile_jig-line2_text2" class="profile_jig-text" style="margin-top:11px;"> Character # - </p>
+            <select id="profile_jig-line2" class="profile_jig_amount-select" style="margin-top:4px;">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+            
+            <br><br><br>
+
+            <div id="profile_jig-apt" class="profile_edit-checkbox" style="margin-top:15px;">
+                <p class="checkbox_text">Apartment Jig</p>
+                <label class="checkbox_container">
+                    <input id="jig-apt" type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+            </div><br><br><br>
+
+            <div class="add-btn" style="margin-top:20px;" onclick="jig_profiles_confirm()">
+                <span class="add-btn-text">Jig Selection</span>
+            </div>
+            <div class="norm-btn" style="margin-top:20px;" onclick="hide_popup_profile_jig()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+
+        <div id="popup-profile_jig_error" class="popup_small" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Error Jigging</span><br><br>
+            <span class="popup-description">Maximum amount of groups reached. Please remove a group.</span><br><br>
+            <div class="add-btn" onclick="hide_popup_profile_jig_error()">
+                <span class="add-btn-text">Ok</span>
+            </div>
+        </div>
+
+
+
+
+        <div id="popup-cards_group_edit" class="popup_medium" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Edit Card Group</span><br><br><br>
+            <input type="text" id="popup-cards_group_edit-input" class="popup-input_large" placeholder="Group Name..."></input><br><br><br><br>
+            <div class="add-btn" onclick="edit_card_group_confirm()">
+                <div class="add-btn-icon"></div>
+                <span class="add-btn-text">Edit Group</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_cards_group_edit()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+
+        <div id="popup-cards_group_name" class="popup_medium" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Add Card Group</span><br><br><br>
+            <input type="text" id="popup-cards_group_name-input" class="popup-input_large" placeholder="Group Name..."></input><br><br><br><br>
+            <div class="add-btn" onclick="add_cards_group()">
+                <div class="add-btn-icon"></div>
+                <span class="add-btn-text">Add Group</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_cards_group_name()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+    
+        <div id="popup-cards_group_remove" class="popup_small" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Verify Action</span><br><br>
+            <span class="popup-description">Are you sure you want to remove this card group?</span><br><br>
+            <div class="red-btn" onclick="remove_card_group_confirm()">
+                <span class="red-btn-text">Remove</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_cards_group_remove()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+
+        <div id="popup-cards_add_account" class="popup_medium" style="visibility:hidden;opacity:0;">
+            <span class="popup-title" style="padding-bottom:5px;">Add Account</span><br><br>
+            <select id="card_account_add_type" class="card_dropdown-account-select">
+                <option value="">Account Type</option>
+                <option value="privacy">Privacy</option>
+            </select>
+            <input type="text" id="card_account_add_username" class="card_account-login-input" placeholder="Email...">
+            <br><br><br>
+            <input type="text" id="card_account_add_password" class="card_account-login-input" placeholder="Password...">
+            <br><br>
+            <div class="add-btn" onclick="add_card_account()" style="margin-top:40px;">
+                <div class="add-btn-icon"></div>
+                <span class="add-btn-text">Add Account</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_cards_add_account()" style="margin-top:40px;">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+
+        <div id="popup-cards_import_error" class="popup_small" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Error Importing</span><br><br>
+            <span id="popup-cards_import_error_description" class="popup-description">Error</span><br><br>
+            <div class="add-btn" onclick="hide_popup_cards_import_error()" style="margin-top:20px;">
+                <span class="add-btn-text">Ok</span>
+            </div>
+        </div>
+
+        <div id="popup-cards_remove" class="popup_small" style="visibility:hidden;opacity:0;height:190px;">
+            <span class="popup-title">Verify Action</span><br><br>
+            <span class="popup-description">Are you sure you want to remove the selection of cards? This will not delete the cards.</span><br><br>
+            <div class="red-btn" onclick="remove_account_cards()">
+                <span class="red-btn-text">Remove Selection</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_cards_remove()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+
+        <div id="popup-cards_move" class="popup_small" style="visibility:hidden;opacity:0;">
+            <span class="popup-title">Select Group</span><br><br>
+            <select id="cards_move-select" class="profile_import-select">
+            </select><br><br><br><br>
+            <div class="add-btn" onclick="move_account_cards()">
+                <span class="add-btn-text">Move Selection</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_cards_move()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+
+        <div id="popup-cards_export" class="popup_medium" style="visibility:hidden;opacity:0;">
+            <span class="popup-title" style="padding-bottom:0px;">Select Profile Group</span><br><br>
+            <select id="cards_export-select" class="profile_import-select" style="margin-left:18px;width:150px;">
+            </select>
+            <span id="cards_export-billing_count" class="card_export_text">0</span>
+            <span class="card_export_text">Profiles:</span>
+
+            <br><br><br>
+
+            <span id="cards_export-card_count" class="card_export_text">0</span>
+            <span class="card_export_text">Selected Cards:</span>
+
+            <br>
+
+            <div class="profile_edit-checkbox">
+                <p class="checkbox_text">Reuse Cards</p>
+                <label class="checkbox_container">
+                    <input id="cards_export_reuse" type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+
+            <br><br><br>
+
+            <div class="add-btn" onclick="export_account_cards()">
+                <span class="add-btn-text">Export Selection</span>
+            </div>
+            <div class="norm-btn" onclick="hide_popup_cards_export()">
+                <span class="norm-btn-text">Cancel</span>
+            </div>
+        </div>
+    </body>
+</html>
