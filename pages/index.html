@@ -111,16 +111,22 @@
                         ipcRenderer.on('update_available', () => {
                             ipcRenderer.removeAllListeners('update_available');
                             description.innerHTML = 'Update Available';
-                            version.innerHTML = "Downloading update...";
+                            version.innerHTML = "Downloading...";
                             version.style.color = "#FA5677"
                         });
 
                         ipcRenderer.on('update_downloaded', () => {
                             ipcRenderer.removeAllListeners('update_downloaded');
-                            description.innerHTML = 'Update Available';
-                            version.innerHTML = "Update downloaded. Please install...";
+                            description.innerHTML = 'Update Ready';
+                            version.innerHTML = "Update Downloaded. Please Install...";
                             version.style.color = "#49B3A8"
-                            btn.style.display = "block"
+                            btn.style.display = "flex"
+                        });
+
+                        ipcRenderer.on('update_progress', (process_percent) => {
+                            description.innerHTML = 'Update Available';
+                            version.innerHTML = "Downloading... " + process_percent + "%";
+                            version.style.color = "#FA5677"
                         });
 
                         function restartApp() {

@@ -23,7 +23,4 @@ function submit_auth() {
             document.getElementById("auth_status").style.marginLeft = "132px";
         }
     }
-
-    
-
 }

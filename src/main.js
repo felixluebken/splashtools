@@ -47,12 +47,16 @@ function openMainWindow() {
   })
 
   //CPU AND MEMORY METER
-  setInterval(() => {
-  os.cpuUsage(function (v) {
-    mainWindow.webContents.send("cpu", v * 100);
-    mainWindow.webContents.send("mem", 100 - (os.freememPercentage() * 100));
-  });
-  }, 1000);
+  var performance_interval = setInterval(() => {
+    os.cpuUsage(function (v) {
+      try {
+        mainWindow.webContents.send("cpu", v * 100);
+        mainWindow.webContents.send("mem", 100 - (os.freememPercentage() * 100));
+      } catch {
+        clearInterval(performance_interval)
+      }
+    });
+  }, 1500);
 }
 function openAuthWindow() {
   authWindow = new BrowserWindow({
@@ -130,13 +134,12 @@ autoUpdater.on('update-downloaded', () => {
   mainWindow.webContents.send('update_downloaded');
 });
 
+autoUpdater.on('download-progress', (progressObj) => {
+  mainWindow.webContents.send('update_progress',progressObj.percent);
+})
+
 ipcMain.on('restart_app', () => {
-  let xhr = new XMLHttpRequest();
-  xhr.open("GET","http://localhost:8081/terminate")
-  xhr.send()
-  xhr.onload=function(){
-    autoUpdater.quitAndInstall();
-  }
+  autoUpdater.quitAndInstall();
 });
 
 
