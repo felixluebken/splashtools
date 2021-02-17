@@ -1,4 +1,5 @@
 let xhr = new XMLHttpRequest();
+const {ipcRenderer} = require('electron')
 
 
 function submit_auth() {
@@ -13,6 +14,7 @@ function submit_auth() {
         if(response["status"] == 0) {
             document.getElementById("auth_status").innerHTML = "Success!";
             document.getElementById("auth_status").style.marginLeft = "177px";
+            ipcRenderer.send('auth')
         } else if(response["status"] == 1) {
             document.getElementById("auth_status").innerHTML = "Invalid Key";
             document.getElementById("auth_status").style.marginLeft = "172px";

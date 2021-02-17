@@ -1,6 +1,6 @@
 {
   "name": "SplashTools",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "",
   "main": "src/main.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "build": "electron-builder build --win --publish never",
     "deploy": "electron-builder build --win --publish always"
   },
-  "author": "SplashX",
+  "author": "dearchitect",
   "license": "ISC",
   "devDependencies": {
     "electron": "^11.2.3",
@@ -29,6 +29,11 @@
     "url" : "https://github.com/felixluebken/splashtools.git"
   }, 
   "build": {
+    "publish": [{
+      "provider": "github",
+      "owner": "felixluebken",
+      "repo": "splashtools"
+    }],
     "extraFiles": [
       "engine",
       "browser",

@@ -1,5 +1,6 @@
 const remote = require('electron').remote;
 
+
 var z = 10
 
 function minimize_window() {

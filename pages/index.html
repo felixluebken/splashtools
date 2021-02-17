@@ -118,7 +118,7 @@
                         ipcRenderer.on('update_downloaded', () => {
                             ipcRenderer.removeAllListeners('update_downloaded');
                             description.innerHTML = 'Update Available';
-                            version.innerHTML = "Update downloaded. Please install....";
+                            version.innerHTML = "Update downloaded. Please install...";
                             version.style.color = "#49B3A8"
                             btn.style.display = "block"
                         });
